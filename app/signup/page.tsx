@@ -1,27 +1,33 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert('Passwords do not match!');
+      alert("Passwords do not match!");
       return;
     }
-    console.log('Sign Up Data:', { email, password });
-    alert('Sign up successful! (Check console for data)');
-  }
+    console.log("Sign Up Data:", { email, password });
+    alert("Sign up successful! (Check console for data)");
+  };
 
   return (
     <motion.div
@@ -108,7 +114,10 @@ export default function SignUpPage() {
           </form>
           <div className="mt-6 text-center text-sm text-gray-400">
             Already have an account?{" "}
-            <Link href="/signin" className="underline text-purple-400 hover:text-purple-500">
+            <Link
+              href="/signin"
+              className="underline text-purple-400 hover:text-purple-500"
+            >
               Sign In
             </Link>
           </div>
