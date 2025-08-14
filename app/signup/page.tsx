@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
 import Link from "next/link";
 import {
   Card,
@@ -19,6 +19,11 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // Refs for GSAP animations
+  const cardRef = useRef<HTMLDivElement>(null);
+  const fieldRefs = useRef<HTMLDivElement[]>([]);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -29,18 +34,55 @@ export default function SignUpPage() {
     alert("Sign up successful! (Check console for data)");
   };
 
+  useEffect(() => {
+    // Fade in card
+    gsap.fromTo(
+      cardRef.current,
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+    );
+
+    // Stagger form fields
+    gsap.fromTo(
+      fieldRefs.current,
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.15,
+        delay: 0.3,
+        ease: "power2.out",
+      }
+    );
+
+    // Floating effect for card
+    gsap.to(cardRef.current, {
+      y: "+=5",
+      repeat: -1,
+      yoyo: true,
+      duration: 2,
+      ease: "easeInOut",
+    });
+  }, []);
+
+  useEffect(() => {
+    // Button hover bounce
+    if (buttonRef.current) {
+      buttonRef.current.addEventListener("mouseenter", () => {
+        gsap.to(buttonRef.current, { scale: 1.05, duration: 0.2 });
+      });
+      buttonRef.current.addEventListener("mouseleave", () => {
+        gsap.to(buttonRef.current, { scale: 1, duration: 0.2 });
+      });
+    }
+  }, []);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="flex min-h-screen items-center justify-center bg-gray-950 p-4"
-    >
+    <div className="flex min-h-screen items-center justify-center bg-gray-950 p-4">
       <Card
-        className="w-full max-w-md bg-gray-900 text-white"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        ref={cardRef}
+        className="w-full max-w-md bg-gray-900 text-white shadow-lg"
       >
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold">Sign Up</CardTitle>
@@ -50,69 +92,69 @@ export default function SignUpPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
+            <div
+              ref={(el) => {
+                if (el) fieldRefs.current[0] = el;
+              }}
+              className="space-y-2"
+            >
               <Label htmlFor="email">Email</Label>
-              <motion.div
-                whileInView={{ scale: 1 }}
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500"
-                />
-              </motion.div>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500"
+              />
             </div>
-            <div className="space-y-2">
+            <div
+              ref={(el) => {
+                if (el) fieldRefs.current[1] = el;
+              }}
+              className="space-y-2"
+            >
               <Label htmlFor="password">Password</Label>
-              <motion.div
-                whileInView={{ scale: 1 }}
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500"
-                />
-              </motion.div>
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500"
+              />
             </div>
-            <div className="space-y-2">
+            <div
+              ref={(el) => {
+                if (el) fieldRefs.current[2] = el;
+              }}
+              className="space-y-2"
+            >
               <Label htmlFor="confirm-password">Confirm Password</Label>
-              <motion.div
-                whileInView={{ scale: 1 }}
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Input
-                  id="confirm-password"
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500"
-                />
-              </motion.div>
+              <Input
+                id="confirm-password"
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-purple-500"
+              />
             </div>
             <Button
+              ref={buttonRef}
               type="submit"
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
-              whileInView={{ scale: 1 }}
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.5 }}
             >
               Sign Up
             </Button>
           </form>
-          <div className="mt-6 text-center text-sm text-gray-400">
+          <div
+            ref={(el) => {
+              if (el) fieldRefs.current[3] = el;
+            }}
+            className="mt-6 text-center text-sm text-gray-400"
+          >
             Already have an account?{" "}
             <Link
               href="/signin"
@@ -123,6 +165,6 @@ export default function SignUpPage() {
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   );
 }
